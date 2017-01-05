@@ -1,0 +1,36 @@
+#include <iostream>
+#include <cstdlib>
+#include <conio.h>
+#include <windows.h>
+
+bool gameOver;
+enum eDirecton {STOP=0, LEFT, RIGHT, UP, DOWN};
+eDirecton dir;
+void Input()
+{
+    if(_kbhit())// daca ceva e apasat- conio.h
+    {
+        switch(_getch())// se refera la tasta apasata- conio.h
+        {
+        case 'a':
+            if(dir!=RIGHT)
+            dir=LEFT;
+            break;
+        case 'd':
+            if(dir!=LEFT)
+            dir=RIGHT;
+            break;
+        case 'w':
+            if(dir!=DOWN)
+            dir=UP;
+            break;
+        case 's':
+            if(dir!=UP)
+            dir=DOWN;
+            break;
+        case 'x':
+            gameOver=1;
+            break;
+        }
+    }
+}
