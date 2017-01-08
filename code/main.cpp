@@ -9,7 +9,7 @@
 
 using namespace std;
 
-#define HEIGHT 50
+#define HEIGHT 40
 #define LENGTH 100
 
 struct _score{
@@ -17,6 +17,14 @@ struct _score{
             char name[15];
         }TopScoreOne[11], TopScoreTwo[11], _aux;
 
+bool gameOver;
+int x,y, fruitX, fruitY;
+enum eDirecton {STOP=0, LEFT, RIGHT, UP, DOWN};
+eDirecton dir;
+int tailX[100], tailY[100];
+int nTail;
+
+void setup();
 void tableSet(char mat[HEIGHT][LENGTH]);
 void displayTable(char mat[HEIGHT][LENGTH], int score);
 void mainMenu();
@@ -26,28 +34,55 @@ void displayScoreTable(_score TopScoreOne[], int score, int number);
 void checkScore(_score TopScore[11], int number);
 void updateScore(_score TopScore[11], int number);
 void clearscreen();
+void input();
+void logic();
+
 
 int main()
 {
+    // Functii pentru verificarea fara meniu
+    setup();
     int score;
+    char mat[HEIGHT][LENGTH];
+    cin>>score;
+
+    while(gameOver==0)
+    {
+        tableSet(mat);
+        displayTable(mat,score);
+        input();
+        logic();
+
+    }
     /*
     //Cateva comenzi care ma ajuta sa verific functiile de afisare
     char mat[HEIGHT][LENGTH];
-
+    int score;
     displayMenu();
     cin>>score;
     tableSet(mat);
-
     for(int i=1; i<10; i++)
     {
         mat[12][i]='*';
         displayTable(mat,score);
     }
-
-    displayGameOver(TopScoreOne,score,1);
+    displayGameOver(TopScoreOne,score);
     */
+
     return 0;
 }
+
+
+void setup()
+{
+    gameOver= false;
+    dir=STOP;
+    x=LENGTH/2;
+    y=HEIGHT/2;
+    fruitX=rand()%LENGTH;
+    fruitY=rand()%HEIGHT;
+}
+
 void clearscreen()
 {
     HANDLE hOut;
@@ -65,11 +100,32 @@ void tableSet(char mat[HEIGHT][LENGTH])
     {
         for(int j=0;j<LENGTH;j++)
 
-           if (i == 0 || j == 0 || i == HEIGHT - 1 || j == LENGTH  )
+           {if (i == 0 || j == 0 || i == HEIGHT - 1 || j == LENGTH  )
                 mat[i][j]='*';
             else
+            if(i==y && j==x)
+                mat[i][j]='0';
+            else
+            if (i== fruitY && j==fruitX)
+                mat[i][j]='F';
+            else
+            {
+                bool print=false;
+                for(int k=0; k<nTail; k++)
+                {
+                    if(tailX[k]==j && tailY[k]==i)
+                    {
+                        mat[i][j]='o';
+                        print=true;
+                    }
+                }
+            if(print!=true)
                 mat[i][j]=' ';
+            }
+           }
+           cout<<endl;
     }
+
 
 }
 
@@ -279,5 +335,83 @@ void updateScore(_score TopScore[], int number)
             fout<<TopScore[i].name<<endl;
         }
         fout.close();
+    }
+}
+
+
+
+void input()
+{
+    if(_kbhit())// daca ceva e apasat- conio.h
+    {
+        switch(_getch())// se refera la tasta apasata- conio.h
+        {
+        case 'a':
+            if(dir!=RIGHT)
+            dir=LEFT;
+            break;
+        case 'd':
+            if(dir!=LEFT)
+            dir=RIGHT;
+            break;
+        case 'w':
+            if(dir!=DOWN)
+            dir=UP;
+            break;
+        case 's':
+            if(dir!=UP)
+            dir=DOWN;
+            break;
+        case 'x':
+            gameOver=1;
+            break;
+        }
+    }
+}
+
+void logic()
+{
+    int prevX=tailX[0];
+    int prevY=tailY[0];
+    int prev2X, prev2Y;
+    tailX[0]=x;
+    tailY[0]=y;
+    for(int i=1; i<nTail; i++)
+    {
+        prev2X=tailX[i];
+        prev2Y=tailY[i];
+        tailX[i]=prevX;
+        tailY[i]=prevY;
+        prevX=prev2X;
+        prevY=prev2Y;
+    }
+
+    switch (dir)
+    {
+    case LEFT:
+        x--;
+        break;
+    case RIGHT:
+        x++;
+        break;
+    case UP:
+        y--;
+        break;
+    case DOWN:
+        y++;
+        break;
+    default:
+        break;
+    }
+    if(x>LENGTH || x<0 || y>HEIGHT || y<0)
+        gameOver=true;
+    for(int i=0; i<nTail; i++)
+        if(tailX[i]==x && tailY[i]==y)
+            gameOver=true;
+    if(x==fruitX && y==fruitY)
+    {
+        nTail++;
+        fruitX=rand()%LENGTH;
+        fruitY=rand()%HEIGHT;
     }
 }
