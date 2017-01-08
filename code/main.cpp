@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <cstdlib>
 #include <ctime>
 #include <conio.h>
@@ -20,13 +21,43 @@ void tableSet(char mat[HEIGHT][LENGTH]);
 void displayTable(char mat[HEIGHT][LENGTH], int score);
 void mainMenu();
 void displayMenu();
-void displayGameOver(_score TopScore[], int score);
-void displayScoreTable(_score TopScoreOne[], int score);
+void displayGameOver(_score TopScore[], int score, int number);
+void displayScoreTable(_score TopScoreOne[], int score, int number);
+void checkScore(_score TopScore[11], int number);
+void updateScore(_score TopScore[11], int number);
+void clearscreen();
 
 int main()
 {
+    int score;
+    /*
+    //Cateva comenzi care ma ajuta sa verific functiile de afisare
+    char mat[HEIGHT][LENGTH];
 
+    displayMenu();
+    cin>>score;
+    tableSet(mat);
+
+    for(int i=1; i<10; i++)
+    {
+        mat[12][i]='*';
+        displayTable(mat,score);
+    }
+
+    displayGameOver(TopScoreOne,score,1);
+    */
     return 0;
+}
+void clearscreen()
+{
+    HANDLE hOut;
+    COORD Position;
+
+    hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    Position.X = 0;
+    Position.Y = 0;
+    SetConsoleCursorPosition(hOut, Position);
 }
 void tableSet(char mat[HEIGHT][LENGTH])
 {
@@ -44,7 +75,7 @@ void tableSet(char mat[HEIGHT][LENGTH])
 
 void displayTable(char mat[HEIGHT][LENGTH], int score)
 {
-    tableSet(mat);
+    clearscreen();
     cout<<endl;
     for (int i = 0; i < HEIGHT; i++)
 	{
@@ -91,7 +122,7 @@ void displayMenu()
 }
 
 
-void displayGameOver(_score TopScore[], int score)
+void displayGameOver(_score TopScore[], int score, int number)
 {
     system("cls");
 
@@ -106,20 +137,21 @@ void displayGameOver(_score TopScore[], int score)
     cout<<endl;
     Sleep(3000);
     system("cls");
-    displayScoreTable(TopScore,score);
+    displayScoreTable(TopScore,score,number);
 
 }
 
 
-void displayScoreTable(_score TopScore[], int score)
+void displayScoreTable(_score TopScore[], int score, int number)
 {
+    checkScore(TopScore,number);
     int i, ok=0;
     if(score > TopScore[10].score)
     {
         TopScore[10].score=score;
         cout<<"\t Enter your name: "<<endl;
         cout<<"Your name: ";
-        cin.get();
+
         cin.getline(TopScore[10].name,14);
         cout<<endl;
 
@@ -189,7 +221,63 @@ void displayScoreTable(_score TopScore[], int score)
 
                 }
             }
+            updateScore(TopScore,number);
 
 }
 
+void checkScore( _score TopScore[], int number)
+{
+    if(number == 1) //caz in care verificam scorurile de la Singleplayer mode
+    {
+        ifstream fin("TopScoreSinglePlayer");
 
+        for(int i=1; i<11; i++)
+        {
+            fin>>TopScore[i].score;
+            fin.get();
+            fin.get(TopScore[i].name,14);
+            fin.get();
+        }
+        fin.close();
+    }
+    else
+    if(number == 2) // Top score la player vs CPU
+    {
+        ifstream fin("TopScoreVsMode");
+
+        for(int i=1; i<11; i++)
+        {
+            fin>>TopScore[i].score;
+            fin.get();
+            fin.get(TopScore[i].name,14);
+            fin.get();
+        }
+        fin.close();
+    }
+
+}
+
+void updateScore(_score TopScore[], int number)
+{
+    if(number == 1)
+    {
+         ofstream fout("TopScoreSinglePlayer");
+        for(int i=1 ; i<11; i++)
+        {
+            fout<<TopScore[i].score<<endl;
+            fout<<TopScore[i].name<<endl;
+        }
+        fout.close();
+    }
+    else
+         if(number == 2)
+    {
+         ofstream fout("TopScoreVsMode");
+        for(int i=1 ; i<11; i++)
+        {
+            fout<<TopScore[i].score<<endl;
+            fout<<TopScore[i].name<<endl;
+        }
+        fout.close();
+    }
+}

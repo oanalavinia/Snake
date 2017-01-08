@@ -32,6 +32,8 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="TopScoreSinglePlayer" />
+		<Unit filename="TopScoreVsMode" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />
