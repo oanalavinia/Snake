@@ -25,6 +25,7 @@ int tailX[100], tailY[100];
 int nTail;
 
 void setup();
+void tableInit(char mat[HEIGHT][LENGTH]);
 void tableSet(char mat[HEIGHT][LENGTH]);
 void displayTable(char mat[HEIGHT][LENGTH], int score);
 void mainMenu();
@@ -34,18 +35,21 @@ void displayScoreTable(_score TopScoreOne[], int score, int number);
 void checkScore(_score TopScore[11], int number);
 void updateScore(_score TopScore[11], int number);
 void clearscreen();
+void throwFood(int & x, int & y);
 void input();
 void logic();
 
 
 int main()
 {
+
     // Functii pentru verificarea fara meniu
     setup();
     int score;
     char mat[HEIGHT][LENGTH];
     cin>>score;
-
+    tableInit(mat);
+    system("cls");
     while(gameOver==0)
     {
         tableSet(mat);
@@ -54,6 +58,7 @@ int main()
         logic();
 
     }
+
     /*
     //Cateva comenzi care ma ajuta sa verific functiile de afisare
     char mat[HEIGHT][LENGTH];
@@ -66,10 +71,22 @@ int main()
         mat[12][i]='*';
         displayTable(mat,score);
     }
-    displayGameOver(TopScoreOne,score);
+    displayGameOver(TopScoreOne,score,1);
     */
 
     return 0;
+}
+
+void throwFood(int &x, int &y)
+{
+        start:
+            x=rand()%LENGTH;
+            y=rand()%HEIGHT;
+
+         for(int i = 0; i < nTail; i++)
+                    if(tailX[i] == x && tailY[i] == y)
+                        goto start;
+
 }
 
 
@@ -79,8 +96,7 @@ void setup()
     dir=STOP;
     x=LENGTH/2;
     y=HEIGHT/2;
-    fruitX=rand()%LENGTH;
-    fruitY=rand()%HEIGHT;
+    throwFood(fruitX,fruitY);
 }
 
 void clearscreen()
@@ -94,15 +110,23 @@ void clearscreen()
     Position.Y = 0;
     SetConsoleCursorPosition(hOut, Position);
 }
+void tableInit(char mat[HEIGHT][LENGTH])
+{
+    for(int i=0;i<HEIGHT;i++)
+
+        for(int j=0;j<LENGTH;j++)
+            if (i == 0 || j == 0 || i == HEIGHT - 1 || j == LENGTH  )
+                mat[i][j]='*';
+            else
+                mat[i][j]=' ';
+}
 void tableSet(char mat[HEIGHT][LENGTH])
 {
     for(int i=0;i<HEIGHT;i++)
     {
         for(int j=0;j<LENGTH;j++)
 
-           {if (i == 0 || j == 0 || i == HEIGHT - 1 || j == LENGTH  )
-                mat[i][j]='*';
-            else
+           {
             if(i==y && j==x)
                 mat[i][j]='0';
             else
@@ -123,11 +147,12 @@ void tableSet(char mat[HEIGHT][LENGTH])
                 mat[i][j]=' ';
             }
            }
-           cout<<endl;
+
     }
 
 
 }
+
 
 void displayTable(char mat[HEIGHT][LENGTH], int score)
 {
@@ -207,7 +232,7 @@ void displayScoreTable(_score TopScore[], int score, int number)
         TopScore[10].score=score;
         cout<<"\t Enter your name: "<<endl;
         cout<<"Your name: ";
-
+        cin.get();
         cin.getline(TopScore[10].name,14);
         cout<<endl;
 
@@ -403,7 +428,8 @@ void logic()
     default:
         break;
     }
-    if(x>LENGTH || x<0 || y>HEIGHT || y<0)
+    if(x>LENGTH-1 || x<=0 || y>HEIGHT-2
+        || y<=0)
         gameOver=true;
     for(int i=0; i<nTail; i++)
         if(tailX[i]==x && tailY[i]==y)
@@ -411,7 +437,10 @@ void logic()
     if(x==fruitX && y==fruitY)
     {
         nTail++;
-        fruitX=rand()%LENGTH;
-        fruitY=rand()%HEIGHT;
+        throwFood(fruitX,fruitY);
+
     }
 }
+
+
+
