@@ -37,27 +37,21 @@ void updateScore(_score TopScore[11], int number);
 void clearscreen();
 void throwFood(int & x, int & y);
 void input();
-void logic();
-
+void logic(int &score);
+void start(char mat[HEIGHT][LENGTH], int &score, int number);
 
 int main()
 {
 
     // Functii pentru verificarea fara meniu
     setup();
-    int score;
+    int score=0;
+    int number=1;
     char mat[HEIGHT][LENGTH];
-    cin>>score;
+
     tableInit(mat);
     system("cls");
-    while(gameOver==0)
-    {
-        tableSet(mat);
-        displayTable(mat,score);
-        input();
-        logic();
-
-    }
+    start(mat, score, number);
 
     /*
     //Cateva comenzi care ma ajuta sa verific functiile de afisare
@@ -77,6 +71,25 @@ int main()
     return 0;
 }
 
+void start(char mat[HEIGHT][LENGTH], int &score, int number)
+{
+
+    while(gameOver==0)
+    {
+        tableSet(mat);
+        displayTable(mat,score);
+        input();
+        logic(score);
+
+    }
+    if(number==1)
+        displayGameOver(TopScoreOne, score, number);
+        else
+        displayGameOver(TopScoreTwo, score,number );
+
+
+
+}
 void throwFood(int &x, int &y)
 {
         start:
@@ -372,21 +385,33 @@ void input()
         switch(_getch())// se refera la tasta apasata- conio.h
         {
         case 'a':
-            if(dir!=RIGHT)
+           {
+            Sleep(0);
+           if(dir!=RIGHT)
             dir=LEFT;
             break;
+           }
         case 'd':
+            {
+            Sleep(0);
             if(dir!=LEFT)
             dir=RIGHT;
             break;
+            }
         case 'w':
+            {
+            Sleep(50);
             if(dir!=DOWN)
             dir=UP;
             break;
+            }
         case 's':
+            {
+            Sleep(50);
             if(dir!=UP)
             dir=DOWN;
             break;
+            }
         case 'x':
             gameOver=1;
             break;
@@ -394,8 +419,9 @@ void input()
     }
 }
 
-void logic()
+void logic(int &score)
 {
+
     int prevX=tailX[0];
     int prevY=tailY[0];
     int prev2X, prev2Y;
@@ -437,6 +463,7 @@ void logic()
     if(x==fruitX && y==fruitY)
     {
         nTail++;
+        score++;
         throwFood(fruitX,fruitY);
 
     }
