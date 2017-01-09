@@ -502,24 +502,29 @@ void logic(int &score)
         puncteBonus++;
         throwFood(fruitX,fruitY);
         powerups(puncteBonus);
-
-
     }
     else
     if(x==pointsX && y==pointsY)
     {
         score+=2;
+        pointsX=NULL;
+        pointsY=NULL;
 
     }
     else
     if(x==speedyX && y==speedyY)
     {
         Sleep(0);
+        speedyX=NULL;
+        speedyY=NULL;
     }
     else
     if(x==slowlyX && y==slowlyY)
     {
         Sleep(10);
+        slowlyX=NULL;
+        slowlyY=NULL;
+
     }
 }
 void powerups(int puncteBonus)
@@ -540,7 +545,7 @@ void powerups(int puncteBonus)
 
 
     else
-    if(puncteBonus%3==0)
+    if(puncteBonus%9==0)
     {
         throwFood(pointsX, pointsY);
         //score+=2;
