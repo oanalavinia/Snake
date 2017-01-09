@@ -39,7 +39,7 @@ void throwFood(int & x, int & y);
 void input();
 void logic(int &score);
 void start(char mat[HEIGHT][LENGTH], int &score, int number);
-
+void pause();
 int main()
 {
 
@@ -412,12 +412,34 @@ void input()
             dir=DOWN;
             break;
             }
-        case 'x':
-            gameOver=1;
-            break;
+        case 'p':
+            {
+               pause();
+                break;
+            }
+
+
         }
     }
 }
+void pause() //pauses game
+{
+
+    dir=STOP;
+    cout<<""<<endl<<endl;
+    cout<<"Game paused. Press 'p' if you want to continue";
+    ooo:
+
+        if(_kbhit() && _getch()== 'p')
+                   {
+                       system("cls");
+                       return;
+                   }
+        else goto ooo;
+
+    }
+
+
 
 void logic(int &score)
 {
@@ -452,6 +474,7 @@ void logic(int &score)
         y++;
         break;
     default:
+
         break;
     }
     if(x>LENGTH-1 || x<=0 || y>HEIGHT-2
