@@ -18,11 +18,12 @@ struct _score{
         }TopScoreOne[11], TopScoreTwo[11], _aux;
 
 bool gameOver;
-int x,y, fruitX, fruitY;
+int x,y, fruitX, fruitY, puncteBonus;
 enum eDirecton {STOP=0, LEFT, RIGHT, UP, DOWN};
 eDirecton dir;
 int tailX[100], tailY[100];
 int nTail;
+int speedyX, speedyY, lessX, lessY, pointsX, pointsY, slowlyX, slowlyY;
 
 void setup();
 void tableInit(char mat[HEIGHT][LENGTH]);
@@ -40,6 +41,8 @@ void input();
 void logic(int &score);
 void start(char mat[HEIGHT][LENGTH], int &score, int number);
 void pause();
+void powerups(int puncteBonus);
+
 int main()
 {
 
@@ -110,6 +113,7 @@ void setup()
     x=LENGTH/2;
     y=HEIGHT/2;
     throwFood(fruitX,fruitY);
+    puncteBonus=0;
 }
 
 void clearscreen()
@@ -145,6 +149,15 @@ void tableSet(char mat[HEIGHT][LENGTH])
             else
             if (i== fruitY && j==fruitX)
                 mat[i][j]='F';
+            else
+            if(i==speedyY && j==speedyX)
+                mat[i][j]='S';
+            else
+            if(i==lessY && j==lessX)
+                mat[i][j]='L';
+            else
+            if(i==pointsY && j==pointsX)
+                mat[i][j]='P';
             else
             {
                 bool print=false;
@@ -474,7 +487,6 @@ void logic(int &score)
         y++;
         break;
     default:
-
         break;
     }
     if(x>LENGTH-1 || x<=0 || y>HEIGHT-2
@@ -487,10 +499,53 @@ void logic(int &score)
     {
         nTail++;
         score++;
+        puncteBonus++;
         throwFood(fruitX,fruitY);
+        powerups(puncteBonus);
+
 
     }
-}
+    else
+    if(x==pointsX && y==pointsY)
+    {
+        score+=2;
 
+    }
+    else
+    if(x==speedyX && y==speedyY)
+    {
+        Sleep(0);
+    }
+    else
+    if(x==slowlyX && y==slowlyY)
+    {
+        Sleep(10);
+    }
+}
+void powerups(int puncteBonus)
+{
+    if(puncteBonus%5==0 && puncteBonus%2!=0)
+        {
+            throwFood(speedyX, speedyY);
+           //Sleep(0);
+        }
+
+
+    else
+    if(puncteBonus%5==0 && puncteBonus%2==0)
+        {
+            throwFood(slowlyX, slowlyY);
+            //Sleep(10);
+        }
+
+
+    else
+    if(puncteBonus%3==0)
+    {
+        throwFood(pointsX, pointsY);
+        //score+=2;
+    }
+
+}
 
 
