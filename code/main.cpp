@@ -26,6 +26,7 @@ int nTail;
 int speedyX, speedyY, lessX, lessY, pointsX, pointsY, slowlyX, slowlyY;
 char mat[HEIGHT][LENGTH];
 
+void ShowConsoleCursor(bool showFlag);
 void setup();
 void tableInit(char mat[HEIGHT][LENGTH]);
 void tableSet(char mat[HEIGHT][LENGTH]);
@@ -47,6 +48,7 @@ void hitsBonus(int &score);
 
 int main()
 {
+    ShowConsoleCursor(false);
 	mainMenu(mat);
     return 0;
 }
@@ -536,6 +538,7 @@ void logic(int &score)
         hitsBonus(score);
 
 }
+
 void hitsBonus(int &score)
 {
     if(x==pointsX && y==pointsY)
@@ -601,5 +604,14 @@ void powerups(int puncteBonus)
     }
 
 }
+void ShowConsoleCursor(bool showFlag)//face underscor-ul invizibil
+{
+    HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
 
+    CONSOLE_CURSOR_INFO     cursorInfo;
+
+    GetConsoleCursorInfo(out, &cursorInfo);
+    cursorInfo.bVisible = showFlag; // set the cursor visibility
+    SetConsoleCursorInfo(out, &cursorInfo);
+}
 
