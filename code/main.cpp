@@ -43,6 +43,7 @@ void logic(int &score);
 void start(char mat[HEIGHT][LENGTH], int &score, int number);
 void pause();
 void powerups(int puncteBonus);
+void hitsBonus(int &score);
 
 int main()
 {
@@ -532,6 +533,11 @@ void logic(int &score)
         powerups(puncteBonus);
     }
     else
+        hitsBonus(score);
+
+}
+void hitsBonus(int &score)
+{
     if(x==pointsX && y==pointsY)
     {
         score+=2;
@@ -554,6 +560,15 @@ void logic(int &score)
         slowlyY=NULL;
 
     }
+    else
+    if(x==lessX && y==lessY)
+    {
+        tailX[nTail]=NULL;
+        tailY[nTail]=NULL;
+        nTail--;
+        lessX=NULL;
+        lessY=NULL;
+    }
 }
 void powerups(int puncteBonus)
 {
@@ -573,10 +588,16 @@ void powerups(int puncteBonus)
 
 
     else
-    if(puncteBonus%9==0)
+    if(puncteBonus%6==0)
     {
         throwFood(pointsX, pointsY);
         //score+=2;
+    }
+    else
+    if(puncteBonus%8==0)
+    {
+        throwFood(lessX, lessY);
+        // lesstail
     }
 
 }
