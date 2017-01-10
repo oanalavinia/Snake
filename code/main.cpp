@@ -10,7 +10,7 @@
 using namespace std;
 
 #define HEIGHT 40
-#define LENGTH 100
+#define LENGTH 65
 
 struct _score{
             int score;
@@ -24,12 +24,13 @@ eDirecton dir;
 int tailX[100], tailY[100];
 int nTail;
 int speedyX, speedyY, lessX, lessY, pointsX, pointsY, slowlyX, slowlyY;
+char mat[HEIGHT][LENGTH];
 
 void setup();
 void tableInit(char mat[HEIGHT][LENGTH]);
 void tableSet(char mat[HEIGHT][LENGTH]);
 void displayTable(char mat[HEIGHT][LENGTH], int score);
-void mainMenu();
+void mainMenu(char mat[HEIGHT][LENGTH]);
 void displayMenu();
 void displayGameOver(_score TopScore[], int score, int number);
 void displayScoreTable(_score TopScoreOne[], int score, int number);
@@ -45,35 +46,31 @@ void powerups(int puncteBonus);
 
 int main()
 {
-
-    // Functii pentru verificarea fara meniu
-    setup();
-    int score=0;
-    int number=1;
-    char mat[HEIGHT][LENGTH];
-
-    tableInit(mat);
-    system("cls");
-    start(mat, score, number);
-
-    /*
-    //Cateva comenzi care ma ajuta sa verific functiile de afisare
-    char mat[HEIGHT][LENGTH];
-    int score;
-    displayMenu();
-    cin>>score;
-    tableSet(mat);
-    for(int i=1; i<10; i++)
-    {
-        mat[12][i]='*';
-        displayTable(mat,score);
-    }
-    displayGameOver(TopScoreOne,score,1);
-    */
-
+	mainMenu(mat);
     return 0;
 }
 
+void mainMenu(char mat[HEIGHT][LENGTH])
+{
+
+	setup();
+	displayMenu();
+	char index;
+	int score = 0;
+	tableInit(mat);
+_start:
+	cin >> index;
+	if (index == '1')
+		start(mat, score, 1); //0-score , 1-modul de joc(single player)
+    else
+        if(index == '4')
+            goto _exit;
+	else
+		goto _start;
+
+    _exit:
+        return;
+}
 void start(char mat[HEIGHT][LENGTH], int &score, int number)
 {
 
@@ -97,7 +94,7 @@ void throwFood(int &x, int &y)
 {
         start:
             x=rand()%LENGTH;
-            y=rand()%HEIGHT;
+            y=rand()%(HEIGHT-1);
 
          for(int i = 0; i < nTail; i++)
                     if(tailX[i] == x && tailY[i] == y)
@@ -182,21 +179,51 @@ void tableSet(char mat[HEIGHT][LENGTH])
 
 void displayTable(char mat[HEIGHT][LENGTH], int score)
 {
-    clearscreen();
-    cout<<endl;
-    for (int i = 0; i < HEIGHT; i++)
+	clearscreen();
+
+
+	cout << endl;
+	for (int i = 0; i < HEIGHT; i++)
 	{
 		for (int j = 0; j <= LENGTH; j++)
-			if (i == 0 || j == 0 || i == HEIGHT - 1 || j == LENGTH || mat[i][j] != ' ')
+			if (i == 0 || j == 0 || i == HEIGHT - 1 || j == LENGTH)
 			{
-
+				if (j == 0)
+					cout << ' ';
 				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 115);
 				cout << ' ';
-				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 2);
+				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
 			}
 			else
-                cout << mat[i][j];
-        cout << endl;
+				if (mat[i][j] == 'o' || mat[i][j] == '0')
+				{
+
+					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+					if (mat[i][j] == '0')
+						cout << char(178);
+					else
+						cout << char(176);
+					//cout << ' ';
+					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+				}
+				else
+					if (mat[i][j] == 'F')
+					{
+						SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 14);
+						cout << char(254);
+						SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+					}
+                else
+					if (mat[i][j] == 'S' || mat[i][j]== 'P')
+					{
+						SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 115);
+						cout << '?';
+						SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+					}
+
+					else
+						cout << mat[i][j];
+		cout << endl;
 	}
 
 }
@@ -231,15 +258,16 @@ void displayMenu()
 
 void displayGameOver(_score TopScore[], int score, int number)
 {
-    system("cls");
 
-    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 4);
-    cout<<endl<<endl<<endl<<endl<<endl;
-    cout<<"     *****      *     *       * ******       ****  *       * ***** ****    "<<endl;
-    cout<<"    *          * *    * *   * * *           *    *  *     *  *     *   *   "<<endl;
-    cout<<"    *  ****   *   *   *  * *  * *****       *    *   *   *   ****  ****    "<<endl;
-    cout<<"    *  *  *  *******  *   *   * *           *    *    * *    *     * *     "<<endl;
-    cout<<"     *****  *       * *       * ******       ****      *     ***** *   *   "<<endl<<endl;
+    //system("cls");
+    for (int i=0; i<HEIGHT/2+3; i++)
+        cout << "\x1b[A";
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+    cout<<"  *****      *     *       * ******     ****  *       * ***** ****    "<<endl;
+    cout<<" *          * *    * *   * * *         *    *  *     *  *     *   *   "<<endl;
+    cout<<" *  ****   *   *   *  * *  * *****     *    *   *   *   ****  ****    "<<endl;
+    cout<<" *  *  *  *******  *   *   * *         *    *    * *    *     * *     "<<endl;
+    cout<<"  *****  *       * *       * ******     ****      *     ***** *   *   "<<endl<<endl;
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
     cout<<endl;
     Sleep(3000);
@@ -521,7 +549,7 @@ void logic(int &score)
     else
     if(x==slowlyX && y==slowlyY)
     {
-        Sleep(10);
+        Sleep(5510);
         slowlyX=NULL;
         slowlyY=NULL;
 
