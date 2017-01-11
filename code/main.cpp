@@ -9,8 +9,8 @@
 
 using namespace std;
 
-#define HEIGHT 40
-#define LENGTH 65
+#define HEIGHT 30
+#define LENGTH 50
 
 struct _score{
             int score;
@@ -45,6 +45,7 @@ void start(char mat[HEIGHT][LENGTH], int &score, int number);
 void pause();
 void powerups(int puncteBonus);
 void hitsBonus(int &score);
+void displayPause();
 
 int main()
 {
@@ -186,13 +187,14 @@ void displayTable(char mat[HEIGHT][LENGTH], int score)
 
 
 	cout << endl;
+	cout << "\t Score: " << score << endl;
 	for (int i = 0; i < HEIGHT; i++)
 	{
 		for (int j = 0; j <= LENGTH; j++)
 			if (i == 0 || j == 0 || i == HEIGHT - 1 || j == LENGTH)
 			{
 				if (j == 0)
-					cout << ' ';
+					cout << "       ";
 				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 115);
 				cout << ' ';
 				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
@@ -503,23 +505,29 @@ void logic(int &score)
         prevY=prev2Y;
     }
 
-    switch (dir)
-    {
-    case LEFT:
-        x--;
-        break;
-    case RIGHT:
-        x++;
-        break;
-    case UP:
-        y--;
-        break;
-    case DOWN:
-        y++;
-        break;
-    default:
-        break;
-    }
+	switch (dir)
+	{
+	case LEFT:
+		x--;
+		break;
+	case RIGHT:
+		x++;
+		break;
+	case UP:
+	{
+		Sleep(18);
+		y--;
+	}
+	break;
+	case DOWN:
+	{
+		y++;
+		Sleep(18);
+	}
+	break;
+	default:
+		break;
+	}
     if(x>LENGTH-1 || x<=0 || y>HEIGHT-2
         || y<=0)
         gameOver=true;
@@ -615,3 +623,18 @@ void ShowConsoleCursor(bool showFlag)//face underscor-ul invizibil
     SetConsoleCursorInfo(out, &cursorInfo);
 }
 
+
+void displayPause()
+{
+	for (int i = 0; i<HEIGHT / 2 + 6; i++)
+		cout << "\x1b[A";
+	cout << endl;
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+	cout << "\t \t****     *     *    *  *****  ***** " << endl;
+	cout << "\t \t*   *   * *    *    *  *      *     " << endl;
+	cout << "\t \t****   *   *   *    *  *****  ****  " << endl;
+	cout << "\t \t*     *******  *    *      *  *     " << endl;
+	cout << "\t \t*    *       * ******  *****  ***** " << endl << endl;
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+	cout << endl;
+}
