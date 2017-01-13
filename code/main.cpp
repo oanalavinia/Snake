@@ -51,6 +51,8 @@ void resetScore(_score TopScore[], int number);
 void displayOptions();
 void displayScore();
 void coutScore(_score TopScore[11]);
+void displayControls();
+
 int main()
 {
     ShowConsoleCursor(false);
@@ -177,6 +179,31 @@ void displayScore()
         goto up;
 }
 
+void displayControls()
+{
+    char sel;
+    system("cls");
+    while(true)
+    {
+    cout<<" ----------------------------------------------"<<endl;
+    cout<<"|                                              |"<<endl;
+    cout<<"|                     w - up                   |"<<endl;
+    cout<<"|                                              |"<<endl;
+    cout<<"|            a - left        s - right         |"<<endl;
+    cout<<"|                                              |"<<endl;
+    cout<<"|                    d - down                  |"<<endl;
+    cout<<"|                                              |"<<endl;
+    cout<<"|                    p - Pause                 |"<<endl;
+    cout<<"|                                              |"<<endl;
+    cout<<" ---------------------------------------------- "<<endl<<endl<<endl;
+    cout<<"1. Go back  ";
+    cin>>sel;
+    if(sel=='1')
+        displayOptions();
+    else system("cls");
+    }
+}
+
 void displayOptions()
 {
         system("cls");
@@ -201,6 +228,9 @@ void displayOptions()
     else
         if(c=='4')
             mainMenu(mat);
+    else
+        if(c=='2')
+            displayControls();
     else
         goto up;
 
