@@ -18,12 +18,13 @@ struct _score{
         }TopScoreOne[11], TopScoreTwo[11], _aux;
 
 bool gameOver;
-int x,y, fruitX, fruitY, puncteBonus;
+int x,y, fruitX, fruitY, puncteBonus,x2,y2;
 enum eDirecton {STOP=0, LEFT, RIGHT, UP, DOWN};
 eDirecton dir;
-int tailX[100], tailY[100];
-int nTail;
-int speedyX, speedyY, lessX, lessY, pointsX, pointsY, slowlyX, slowlyY;
+int tailX[100], tailY[100], tailX2[100], tailY2[100];
+int nTail,nTail2;
+int directie=2;
+int  lessX, lessY, pointsX, pointsY;
 char mat[HEIGHT][LENGTH];
 
 void ShowConsoleCursor(bool showFlag);
@@ -52,6 +53,10 @@ void displayOptions();
 void displayScore();
 void coutScore(_score TopScore[11]);
 void displayControls();
+void displayLegend();
+void logic2(int&score);
+void moveSnake2(int &directie);
+void start2(char mat[HEIGHT][LENGTH], int &score, int number);
 
 int main()
 {
@@ -73,6 +78,9 @@ _start:
 	cin >> index;
 	if (index == '1')
 		start(mat, score, 1); //0-score , 1-modul de joc(single player)
+    else
+        if(index=='2')
+        start2(mat, score, 2);
     else
         if(index== '3')
             displayOptions();
@@ -102,12 +110,41 @@ void start(char mat[HEIGHT][LENGTH], int &score, int number)
     if(number==1)
         displayGameOver(TopScoreOne, score, number);
         else
+    if(number==2)
         displayGameOver(TopScoreTwo, score,number );
 
 
 
-}
 
+}
+void start2(char mat[HEIGHT][LENGTH], int &score, int number)
+{
+
+    nTail=0;
+    nTail2=0;
+    x2=LENGTH/3;
+    y2=HEIGHT/3;
+    system("cls");
+    gameOver=false;
+    while(gameOver==0)
+    {
+        tableSet(mat);
+        displayTable(mat,score);
+        input();
+        logic(score);
+        logic2(score);
+
+    }
+    if(number==1)
+        displayGameOver(TopScoreOne, score, number);
+        else
+    if(number==2)
+        displayGameOver(TopScoreTwo, score,number );
+
+
+
+
+}
 void displayScore()
 {
 
@@ -181,10 +218,9 @@ void displayScore()
 
 void displayControls()
 {
-    char sel;
+
     system("cls");
-    while(true)
-    {
+
     cout<<" ----------------------------------------------"<<endl;
     cout<<"|                                              |"<<endl;
     cout<<"|                     w - up                   |"<<endl;
@@ -196,12 +232,11 @@ void displayControls()
     cout<<"|                    p - Pause                 |"<<endl;
     cout<<"|                                              |"<<endl;
     cout<<" ---------------------------------------------- "<<endl<<endl<<endl;
-    cout<<"1. Go back  ";
-    cin>>sel;
-    if(sel=='1')
+    cout<<"1. Press b to go back  ";
+    if( _getch()== 'b')
         displayOptions();
     else system("cls");
-    }
+
 }
 
 void displayOptions()
@@ -232,8 +267,33 @@ void displayOptions()
         if(c=='2')
             displayControls();
     else
+        if(c=='3')
+            displayLegend();
+    else
         goto up;
 
+}
+void displayLegend()
+{
+    system("cls");
+         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 119);
+    cout<<"                                                 "<<endl;
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+    cout<<""<<endl<<endl;
+    cout<<"                     Legend    "<<endl<<endl;
+    cout<<"                  1. There are powerups that appear during the game  "<<endl<<endl;
+    cout<<"                  2. After 5 points- bonus for bigger score    "<<endl<<endl;
+    cout<<"                  3. After 8 points- bonus for a smaller tale   "<<endl<<endl;
+    cout<<"                  4. These points will stay on the screen for a longer time     "<<endl<<endl;
+    cout<<"                  5. Press b to go back     "<<endl<<endl;
+     cout<<endl;
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 119);
+    cout<<"                                                 "<<endl;
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+    up:
+    if( _getch()== 'b')
+        displayOptions();
+    goto up;
 }
 
 void throwFood(int &x, int &y)
@@ -258,8 +318,6 @@ void setup()
 {
     gameOver= false;
     dir=STOP;
-    resetBonus(speedyX,speedyY);
-    resetBonus(slowlyX,slowlyY);
     resetBonus(pointsX,pointsY);
     resetBonus(lessX,lessY);
     x=LENGTH/2;
@@ -299,11 +357,11 @@ void tableSet(char mat[HEIGHT][LENGTH])
             if(i==y && j==x)
                 mat[i][j]='0';
             else
+            if(i==y2 && j==x2)
+                mat[i][j]='0';
+            else
             if (i== fruitY && j==fruitX)
                 mat[i][j]='F';
-            else
-            if(i==speedyY && j==speedyX)
-                mat[i][j]='S';
             else
             if(i==lessY && j==lessX)
                 mat[i][j]='L';
@@ -321,6 +379,15 @@ void tableSet(char mat[HEIGHT][LENGTH])
                         print=true;
                     }
                 }
+                 for(int k=0; k<nTail2; k++)
+                {
+                    if(tailX2[k]==j && tailY2[k]==i)
+                    {
+                        mat[i][j]='o';
+                        print=true;
+                    }
+                }
+
             if(print!=true)
                 mat[i][j]=' ';
             }
@@ -670,6 +737,82 @@ void pause() //pauses game
 
     }
 
+void moveSnake2(int &directie)
+{
+
+Sleep(20);
+
+            if(x2<fruitX)
+                {
+                    directie=2;
+                    Sleep(20);
+                    if(directie==4)
+                        y2++;
+                    x2++;
+                }
+            else
+            if(x2>fruitX)
+                {
+                    directie=4;
+                    Sleep(20);
+                    if(directie==2)
+                        y2++;
+                    x2--;
+                }
+            else
+            if(y2<fruitY)
+                {
+                    directie=1;
+                    Sleep(20);
+                    if(directie==3)
+                        x2++;
+                    y2++;
+
+                }
+            else
+            if(y2>fruitY)
+                {
+                    directie=3;
+                    Sleep(20);
+                    if(directie==1)
+                        x2++;
+                    y2--;
+
+                }
+
+
+}
+
+void logic2(int&score)
+{
+    int prevX2=tailX2[0];
+    int prevY2=tailY2[0];
+    int prev2X2, prev2Y2;
+    tailX2[0]=x2;
+    tailY2[0]=y2;
+    for(int i=1; i<nTail2; i++)
+    {
+        prev2X2=tailX2[i];
+        prev2Y2=tailY2[i];
+        tailX2[i]=prevX2;
+        tailY2[i]=prevY2;
+        prevX2=prev2X2;
+        prevY2=prev2Y2;
+    }
+
+   moveSnake2(directie);
+    if(x2>LENGTH-1 || x2<=0 || y2>HEIGHT-2 || y2<=0)
+        gameOver=true;
+   //for(int i=0; i<nTail2; i++)
+        //if(tailX2[i]==x2 && tailY2[i]==y2)
+            //gameOver=true;
+    if(x2==fruitX && y2==fruitY)
+    {
+        nTail2++;
+        throwFood(fruitX,fruitY);
+    }
+
+}
 
 
 void logic(int &score)
@@ -741,21 +884,7 @@ void hitsBonus(int &score)
         pointsY=NULL;
 
     }
-    else
-    if(x==speedyX && y==speedyY)
-    {
-        Sleep(0);
-        speedyX=NULL;
-        speedyY=NULL;
-    }
-    else
-    if(x==slowlyX && y==slowlyY)
-    {
-        Sleep(5510);
-        slowlyX=NULL;
-        slowlyY=NULL;
 
-    }
     else
     if(x==lessX && y==lessY)
     {
@@ -768,23 +897,8 @@ void hitsBonus(int &score)
 }
 void powerups(int puncteBonus)
 {
-    if(puncteBonus%5==0 && puncteBonus%2!=0)
-        {
-            throwFood(speedyX, speedyY);
-           //Sleep(0);
-        }
 
-
-    else
-    if(puncteBonus%5==0 && puncteBonus%2==0)
-        {
-            throwFood(slowlyX, slowlyY);
-            //Sleep(10);
-        }
-
-
-    else
-    if(puncteBonus%6==0)
+    if(puncteBonus%5==0)
     {
         throwFood(pointsX, pointsY);
         //score+=2;
