@@ -744,38 +744,42 @@ Sleep(20);
 
             if(x2<fruitX)
                 {
-                    directie=2;
-                    Sleep(20);
                     if(directie==4)
                         y2++;
+                    directie=2;
+                    Sleep(20);
+
                     x2++;
                 }
             else
             if(x2>fruitX)
                 {
-                    directie=4;
-                    Sleep(20);
                     if(directie==2)
                         y2++;
+                    directie=4;
+                    Sleep(20);
+
                     x2--;
                 }
             else
             if(y2<fruitY)
                 {
-                    directie=1;
-                    Sleep(20);
                     if(directie==3)
                         x2++;
+                    directie=1;
+                    Sleep(20);
+
                     y2++;
 
                 }
             else
             if(y2>fruitY)
                 {
-                    directie=3;
-                    Sleep(20);
                     if(directie==1)
                         x2++;
+                    directie=3;
+                    Sleep(20);
+
                     y2--;
 
                 }
@@ -803,9 +807,6 @@ void logic2(int&score)
    moveSnake2(directie);
     if(x2>LENGTH-1 || x2<=0 || y2>HEIGHT-2 || y2<=0)
         gameOver=true;
-   //for(int i=0; i<nTail2; i++)
-        //if(tailX2[i]==x2 && tailY2[i]==y2)
-            //gameOver=true;
     if(x2==fruitX && y2==fruitY)
     {
         nTail2++;
